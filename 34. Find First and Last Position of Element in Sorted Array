@@ -1,3 +1,4 @@
+V1:
 class Solution {
     public int[] searchRange(int[] nums, int target) {
         int[] result = new int[2];  
@@ -59,3 +60,74 @@ class Solution {
         
     }
 }
+
+V2:
+class Solution {
+    public int[] searchRange(int[] nums, int target) {
+        int[] result = new int[2];  
+        result[0] = result[1] = -1;   
+        if(nums == null || nums.length == 0){            
+            return result;
+        }
+        int start = 0;
+        int end = nums.length - 1;
+        int start1 = 0;
+        int end1 = nums.length - 1;
+
+        //由于binary search是建立在起码3个格子的基础上，所以先考虑2个格子及以下的部分
+        if(nums.length <= 2){
+            if(nums[start] == target && nums[end] == target){
+                result[0] = start;
+                result[1] = end;
+                return result;
+            }else if(nums[start] == target){
+                result[0] = result[1] = start;
+            }else if(nums[end] == target){
+                result[0] = result[1] = end;
+            }else{
+                return result;
+            }
+        }
+        if(nums.length > 2){
+            while(start + 1 < end){
+                int mid = (start + end) / 2;
+                if(nums[mid] == target){
+                    //return mid;是不对的，因为要找first position of target，所以要不断往前逼近
+                    end = mid;
+                }else if(nums[mid] < target){
+                    start = mid;
+                }else{
+                    end = mid;
+                }
+            }
+            if(nums[start] == target){
+                result[0] = start;
+            }else if(nums[start] != target && nums[end] == target){
+                result[0] = end;
+            }else if(nums[start] != target && nums[end] != target){
+                return result;
+            }
+            while(start1 + 1 < end1){
+                int mid1 = (start1 + end1) / 2;
+                if(nums[mid1] == target){
+                    //return mid;是不对的，因为要找first position of target，所以要不断往前逼近
+                    //end = mid;
+                    start1 = mid1;
+                }else if(nums[mid1] < target){
+                    start1 = mid1;
+                }else{
+                    end1 = mid1;
+                }
+            }
+            if(nums[end1] == target){
+                result[1] = end1;
+            }else if(nums[start1] == target && nums[end1] != target){
+                result[1] = start1;
+            }else if(nums[start1] != target && nums[end1] != target){
+                return result;
+            }
+            
+        }
+        return result;          
+    }
+}   
