@@ -1,0 +1,74 @@
+/**
+ * // This is ArrayReader's API interface.
+ * // You should not implement it, or speculate about its implementation
+ * interface ArrayReader {
+ *     public int get(int index) {}
+ * }
+ */
+
+class Solution {
+    public int search(ArrayReader reader, int target) {
+        int count = Integer.MAX_VALUE;
+        int start = 0;
+        while(reader.get(count) > target && count > 0){
+            count = count / 2;
+        }
+        start = count;
+        int end = count * 2;
+        while(start + 1 < end){
+        int mid = start + (end - start)/2;
+            if(reader.get(mid) == target){
+                return mid;
+            }else if(reader.get(mid) < target){
+                start = mid;
+            }else{
+                end = mid;
+            }
+        }
+        if(reader.get(start) == target){
+            return start;
+        }else if(reader.get(end) == target){
+            return end;
+        }            
+        
+        return -1;
+    }
+}
+
+V2: 用乘的
+
+/**
+ * // This is ArrayReader's API interface.
+ * // You should not implement it, or speculate about its implementation
+ * interface ArrayReader {
+ *     public int get(int index) {}
+ * }
+ */
+
+class Solution {
+    public int search(ArrayReader reader, int target) {
+        int count = 1;
+        int start = 0;
+        while(reader.get(count) < target){
+            count = count * 2;
+        }
+        int end = count;
+        while(start + 1 < end){
+        int mid = start + (end - start)/2;
+            if(reader.get(mid) == target){
+                return mid;
+            }else if(reader.get(mid) < target){
+                start = mid;
+            }else{
+                end = mid;
+            }
+        }
+        if(reader.get(start) == target){
+            return start;
+        }else if(reader.get(end) == target){
+            return end;
+        }            
+        
+        return -1;
+    }
+}
