@@ -1,0 +1,40 @@
+class Solution {
+    public int[] findPeakGrid(int[][] mat) {
+        int start = 0;
+        int end = mat.length - 1;
+        int[] result = new int[2];
+        while(start + 1 < end){
+            int mid = start + (end - start) / 2;
+            if(findMax(mat, mid)[1] < findMax(mat, (mid + 1))[1]){
+                start = mid;
+            }else{
+                end = mid;
+            }
+        }
+        //剩下start and end两行，找到最大的max
+        int[] findMaxStart = findMax(mat, start);
+        int[] findMaxEnd = findMax(mat, end);
+        if(findMaxStart[1] < findMaxEnd[1]){
+            result[0] = end;
+            result[1] = findMaxEnd[0];
+            return result;
+        }else{
+            result[0] = start;
+            result[1] = findMaxStart[0];
+            return result;
+        }
+        
+    }
+    private int[] findMax(int[][] mat, int row){
+        int[] result = new int[2];
+        int max = Integer.MIN_VALUE;
+        for(int i = 0; i < mat[row].length; i++){
+            if(mat[row][i] > max){
+                max = mat[row][i];
+                result[0] = i;
+                result[1] = max;
+            }
+        }
+        return result;
+    }
+}
