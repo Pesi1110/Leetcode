@@ -25,15 +25,16 @@ class Solution {
         }else{
             peak = end;
         }
-        if(mountainArr.get(peak) == target){
-            return peak;
-        }
         //find target on the left side;
         int leftTarget = searchTarget(0, peak, target, 1, mountainArr);
         //find target on the right side;
         int rightTarget = searchTarget(peak, mountainArr.length() - 1, - target, -1, mountainArr);
         if(leftTarget == rightTarget){
-            return -1;
+            if(leftTarget == -1){
+                return -1;
+            }else{
+                return leftTarget;
+            }
         }
         if(leftTarget < rightTarget){
             if(leftTarget != -1){
