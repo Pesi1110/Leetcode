@@ -1,38 +1,36 @@
-class Solution {
+lass Solution {
     public int[] findPeakGrid(int[][] mat) {
+        int[] result = new int[2];
         int start = 0;
         int end = mat.length - 1;
-        int[] result = new int[2];
         while(start + 1 < end){
             int mid = start + (end - start) / 2;
-            if(findMax(mat, mid)[1] < findMax(mat, (mid + 1))[1]){
+            int[] midMax = findMax(mat[mid]);
+            int[] midPlusMax = findMax(mat[mid + 1]);
+            if( midMax[1]< midPlusMax[1]){
                 start = mid;
             }else{
                 end = mid;
             }
         }
-        //剩下start and end两行，找到最大的max
-        int[] findMaxStart = findMax(mat, start);
-        int[] findMaxEnd = findMax(mat, end);
-        if(findMaxStart[1] < findMaxEnd[1]){
-            result[0] = end;
-            result[1] = findMaxEnd[0];
-            return result;
-        }else{
+        int[] startMax = findMax(mat[start]);
+        int[] endMax = findMax(mat[end]);
+        if(startMax[1] > endMax[1]){
             result[0] = start;
-            result[1] = findMaxStart[0];
+            result[1] = startMax[0];
             return result;
         }
-        
+        result[0] = end;
+        result[1] = endMax[0];
+        return result;
     }
-    private int[] findMax(int[][] mat, int row){
+    private int[] findMax(int[] arr){
         int[] result = new int[2];
-        int max = Integer.MIN_VALUE;
-        for(int i = 0; i < mat[row].length; i++){
-            if(mat[row][i] > max){
-                max = mat[row][i];
+        result[1] = Integer.MIN_VALUE;
+        for(int i = 0; i < arr.length; i++){
+            if(arr[i] > result[1]){
+                result[1] = arr[i];
                 result[0] = i;
-                result[1] = max;
             }
         }
         return result;
