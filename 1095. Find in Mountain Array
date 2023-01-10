@@ -1,0 +1,69 @@
+/**
+ * // This is MountainArray's API interface.
+ * // You should not implement it, or speculate about its implementation
+ * interface MountainArray {
+ *     public int get(int index) {}
+ *     public int length() {}
+ * }
+ */
+ 
+class Solution {
+    public int findInMountainArray(int target, MountainArray mountainArr) {
+        int start = 0;
+        int end = mountainArr.length() - 1;
+        while(start + 1 < end){
+            int mid = start + (end - start) / 2;
+            if(mountainArr.get(mid) < mountainArr.get(mid + 1)){
+                start = mid;
+            }else{
+                end = mid;
+            }
+        }
+        int peak;
+        if(mountainArr.get(start) > mountainArr.get(end)){
+            peak = start;
+        }else{
+            peak = end;
+        }
+        if(mountainArr.get(peak) == target){
+            return peak;
+        }
+        //find target on the left side;
+        int leftTarget = searchTarget(0, peak, target, 1, mountainArr);
+        //find target on the right side;
+        int rightTarget = searchTarget(peak, mountainArr.length() - 1, - target, -1, mountainArr);
+        if(leftTarget == rightTarget){
+            return -1;
+        }
+        if(leftTarget < rightTarget){
+            if(leftTarget != -1){
+                return leftTarget;
+            }
+            return rightTarget;
+        }
+        if(leftTarget > rightTarget){
+            return leftTarget;
+        }
+        return -1;
+    }
+    private int searchTarget(int low, int peak, int target, int c, MountainArray mountainArr){
+        while(low + 1 < peak){
+            int m = low + (peak - low) / 2;
+            if(c * mountainArr.get(m) < target){
+                low = m;
+            }else if(c * mountainArr.get(m) > target){
+                peak = m;
+            }else if(c * mountainArr.get(m) == target){
+                return m;
+            }
+        }
+        if(c * mountainArr.get(low) == target){
+            return low;
+        }
+        if(c * mountainArr.get(peak) == target){
+            return peak;
+        }
+        return -1;
+        
+    }
+}
