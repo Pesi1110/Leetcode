@@ -1,0 +1,29 @@
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+    public Node parent;
+};
+*/
+
+class Solution {
+    public Node lowestCommonAncestor(Node p, Node q) {
+        HashSet<Node> pPath = new HashSet<Node>();
+        HashSet<Node> qPath = new HashSet<Node>();
+        Node p1 = p;
+        Node q1 = q;
+        while(p1 != null){
+            pPath.add(p1);
+            p1 = p1.parent;
+        }
+        while(q1 != null){
+            if(pPath.contains(q1)){
+                return q1;
+            }
+            q1 = q1.parent;
+        }
+        return null;
+    }
+}
