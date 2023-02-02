@@ -10,23 +10,16 @@
 class Result{
     TreeNode lca;
     int pq;
-    public Result(TreeNode lca, int pq){
+    Result(TreeNode lca, int pq){
         this.lca = lca;
         this.pq = pq;
     }
 }
 class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        Result resultLeft = findLca(root.left, p, q);
-        Result resultRight = findLca(root.right, p, q);
-        if(resultLeft.pq == 1 && resultRight.pq == 1){
-            return root;
-        }
-        if(resultLeft.pq == 2){
-            return resultLeft.lca;
-        }
-        if(resultRight.pq == 2){
-            return resultRight.lca;
+        Result result = findLca(root, p, q);
+        if(result.pq == 2){
+            return result.lca;
         }
         return null;
     }
@@ -36,21 +29,32 @@ class Solution {
         }
         Result left = findLca(root.left, p, q);
         Result right = findLca(root.right, p, q);
+        //碰到p, q的处理
         if(root == p || root == q){
-            if(left.lca != null || right.lca != null){
+            if(left.pq == 1 || right.pq == 1){
                 return new Result(root, 2);
             }
             return new Result(root, 1);
         }
-        if(left.lca != null && right.lca == null){
+        //哪边为2回哪边
+        if(left.pq == 2){
             return left;
         }
-        if(right.lca != null && left.lca == null){
+        if(right.pq == 2){
             return right;
         }
-        if(left.lca != null && right.lca != null){
+        //每边都有一个一
+        if(left.pq == 1 && right.pq == 1){
             return new Result(root, 2);
         }
+        //两边只有一个一
+        if(left.pq == 1 && right.pq == 0){
+            return left;
+        }
+        if(right.pq == 1 && left.pq == 0){
+            return right;
+        }
+        //两边都没一
         return new Result(null, 0);
     }
 }
