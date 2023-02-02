@@ -1,0 +1,35 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode[] nodes) {
+        Set<TreeNode> nodeSet = new HashSet<>(Arrays.asList(nodes));
+        return lca(root, nodeSet);
+    }
+    private TreeNode lca(TreeNode root, Set<TreeNode> nodeSet){
+        if(root == null){
+            return null;
+        }
+        if(nodeSet.contains(root)){
+            return root;
+        }
+        TreeNode left = lca(root.left, nodeSet);
+        TreeNode right = lca(root.right, nodeSet);
+        if(left != null && right != null){
+            return root;
+        }
+        if(left != null){
+            return left;
+        }
+        if(right != null){
+            return right;
+        }
+        return null;
+    }
+}
