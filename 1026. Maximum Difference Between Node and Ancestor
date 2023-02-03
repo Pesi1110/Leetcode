@@ -1,0 +1,54 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Result{
+    int minNode;
+    int maxNode;
+    int maxDiff;
+    Result(int minNode, int maxNode,int maxDiff){
+        this.minNode = minNode;
+        this.maxNode = maxNode;
+        this.maxDiff = maxDiff;
+    }
+}
+class Solution {
+    public int maxAncestorDiff(TreeNode root) {
+        //左树回最小的node,最大的difference，以及最大的node
+        //左右树先node对比，用最小的去跟root相减，用最大的跟root相减，求出绝对值最大
+        //再用求出的数与左右maxdiff对比找到最大的
+        return findDiff(root).maxDiff;
+    }
+    private Result findDiff(TreeNode root){
+        if(root == null){
+            return new Result(0, 0, -1);
+        }
+        Result left = findDiff(root.left);
+        Result right = findDiff(root.right);
+        if(left.maxDiff == -1 && right.maxDiff == -1){
+            return new Result(root.val, root.val, 0);
+        }
+        if(left.maxDiff != - 1 && right.maxDiff == -1){
+            return new Result(Math.min(left.minNode, root.val), Math.max(left.maxNode, root.val), Math.max(left.maxDiff, Math.max(Math.abs(root.val - left.maxNode), Math.abs(root.val - left.minNode))));
+        }
+        if(left.maxDiff == - 1 && right.maxDiff != -1){
+            return new Result(Math.min(right.minNode, root.val), Math.max(right.maxNode, root.val), Math.max(right.maxDiff, Math.max(Math.abs(root.val - right.maxNode), Math.abs(root.val - right.minNode))));
+        }
+        int maxVal = Math.max(left.maxNode, right.maxNode);
+        int minVal = Math.min(left.minNode, right.minNode);
+        int diff = Math.max(Math.abs(root.val - maxVal), Math.abs(root.val - minVal));
+        int maxDifference = Math.max(Math.max(diff, left.maxDiff), right.maxDiff);
+        return new Result(Math.min(root.val, minVal), Math.max(root.val, maxVal), maxDifference);
+    }
+}
