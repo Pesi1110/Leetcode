@@ -1,0 +1,45 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Result{
+    double sum;
+    double numbers;
+    double average;
+    Result(double sum, double numbers,double average){
+        this.sum = sum;
+        this.numbers = numbers;
+        this.average = average;
+    }
+}
+class Solution {
+    public double maximumAverageSubtree(TreeNode root) {
+        //左右树比较average,选大的那个
+        //求出包括root之后整个的average
+        //两个比较传回最大的avg
+        return maxAvg(root).average;
+    }
+    private Result maxAvg(TreeNode root){
+        if(root == null){
+            return new Result(0, 0, 0);
+        }
+        Result left = maxAvg(root.left);
+        Result right = maxAvg(root.right);
+        double newSum = left.sum + right.sum + root.val;
+        double newNumbers = left.numbers + right.numbers + 1;
+        double newAvg =  newSum/ newNumbers;
+        return new Result(newSum, newNumbers, Math.max(Math.max(left.average, right.average), newAvg));
+    }
+
+}
