@@ -1,0 +1,66 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Result{
+    TreeNode minNode;
+    TreeNode maxNode;
+    boolean isValidBST;
+    Result(TreeNode minNode, TreeNode maxNode, boolean isValidBST){
+        this.minNode = minNode;
+        this.maxNode = maxNode;
+        this.isValidBST = isValidBST;
+    }
+}
+class Solution {
+    public boolean isValidBST(TreeNode root) {
+        return helper(root).isValidBST;
+    }
+    private Result helper(TreeNode root){
+        if(root == null){
+            return new Result(null, null, true);
+        }
+        Result left= helper(root.left);
+        Result right = helper(root.right);
+        if(left.minNode == null && left.maxNode == null && right.minNode == null && right.maxNode == null){
+            return new Result(root, root, true);
+        }
+        if(left.minNode == null && left.maxNode == null && right.minNode != null && right.maxNode != null){
+            if(right.isValidBST == true && left.isValidBST == true){
+                if(right.minNode.val > root.val){
+                    return new Result(root, right.maxNode, true);                 
+                }       
+            }
+            return new Result(root, root, false);
+        }
+        if(left.minNode != null && left.maxNode != null && right.minNode == null && right.maxNode == null){
+            if(left.isValidBST == true && right.isValidBST == true){
+                if(left.maxNode.val < root.val){
+                    return new Result(left.minNode, root, true);
+                }            
+            }
+            return new Result(root, root, false);
+        }
+        if(left.minNode != null && left.maxNode != null && right.minNode != null && right.maxNode != null){
+            if(left.isValidBST && right.isValidBST == true){
+                if(left.maxNode.val < root.val && right.minNode.val > root.val){
+                    return new Result(left.minNode, right.maxNode, true);
+                }             
+            }
+            return new Result(root, root, false);
+        }
+        return new Result(root, root, false);
+        
+    }
+}
