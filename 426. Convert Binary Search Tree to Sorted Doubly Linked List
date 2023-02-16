@@ -1,0 +1,68 @@
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+
+    public Node() {}
+
+    public Node(int _val) {
+        val = _val;
+    }
+
+    public Node(int _val,Node _left,Node _right) {
+        val = _val;
+        left = _left;
+        right = _right;
+    }
+};
+*/
+class Result{
+    Node head;
+    Node tail;
+    Result(Node head, Node tail){
+        this.head = head;
+        this.tail = tail;
+    }
+}
+class Solution {
+    public Node treeToDoublyList(Node root) {
+        if(root == null){
+            return null;
+        }
+        Result result = helper(root);
+        result.head.left = result.tail;
+        result.tail.right = result.head;
+        //return the pointer to the smallest element of linked list
+        return result.head;
+    }
+    private Result helper(Node root){
+        if(root == null){
+            return new Result(null, null);
+        }
+        Result leftResult = helper(root.left);
+        Result rightResult = helper(root.right);
+        if(leftResult.head == null && rightResult.head == null){
+            return new Result(root, root);
+        }
+        if(leftResult.head != null && rightResult.head != null){
+            leftResult.tail.right = root;
+            rightResult.head.left = root;
+            root.right = rightResult.head;
+            root.left = leftResult.tail;
+            return new Result(leftResult.head, rightResult.tail);
+        }
+        if(leftResult.head != null && rightResult.head == null){
+            leftResult.tail.right = root;
+            root.left = leftResult.tail;
+            return new Result(leftResult.head, root);
+        }
+        if(leftResult.head == null && rightResult.head != null){
+            rightResult.head.left = root;
+            root.right = rightResult.head;
+            return new Result(root, rightResult.tail);
+        }
+        return new Result(null, null);
+    }
+}
