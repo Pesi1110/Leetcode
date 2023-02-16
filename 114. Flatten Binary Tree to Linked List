@@ -1,0 +1,65 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Result {
+    TreeNode head;
+    TreeNode tail;
+    Result(TreeNode head, TreeNode tail){
+        this.head = head;
+        this.tail = tail;
+    }
+}
+class Solution {
+    public void flatten(TreeNode root) {
+        if(root == null){
+            return;
+        }
+        helper(root);
+        return;
+    }
+    private Result helper(TreeNode root){
+        if(root == null){
+            return new Result(null, null);
+        }
+        Result leftResult = helper(root.left);
+        Result rightResult = helper(root.right);
+        TreeNode newHead = null;
+        TreeNode newTail = null;
+        if(leftResult.head == null && rightResult.head == null){
+            newHead = root;
+            newTail = root;
+        }
+        if(leftResult.head != null && rightResult.head != null){
+            root.left = null;
+            root.right = leftResult.head;
+            leftResult.tail.right = rightResult.head;
+            newHead = root;
+            newTail = rightResult.tail;
+        }
+        if(leftResult.head != null && rightResult.head == null){
+            root.right = leftResult.head;
+            root.left = null;
+            newHead = root;
+            newTail = leftResult.tail;
+        }
+        if(leftResult.head == null && rightResult.head != null){
+            root.left = null;
+            newHead = root;
+            newTail = rightResult.tail;
+        }
+        return new Result(newHead, newTail);
+        
+    }
+}
