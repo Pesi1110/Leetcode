@@ -1,0 +1,23 @@
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        if(nums.length == 0){
+            return result;
+        }
+        List<Integer> cur = new ArrayList<>();
+        result.add(new ArrayList<>());
+        helper(cur, 0, result, nums);
+        return result;
+    }
+    private void helper(List<Integer> cur, int start, List<List<Integer>> result, int[] nums){
+        if(start == nums.length){
+            return;
+        }
+        for(int i = start; i < nums.length; i++){
+            cur.add(nums[i]);
+            result.add(new ArrayList<>(cur));
+            helper(cur, i + 1, result, nums);
+            cur.remove(cur.size() - 1);
+        }
+    }
+}
