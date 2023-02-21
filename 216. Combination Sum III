@@ -1,0 +1,23 @@
+class Solution {
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> cur = new ArrayList<>();
+        helper(0, 0, 1, cur, k, n, result);
+        return result;
+    }
+    private void helper(int size, int sum, int start, List<Integer> cur, int k, int n, List<List<Integer>> result){
+        if(size == k && sum == n){
+            result.add(new ArrayList<>(cur));
+            return;           
+        }
+        if(size > k || sum > n){
+            return;
+        }
+        for(int i = start; i < 10; i++){
+            cur.add(i);
+            helper((size + 1), (sum + i), (i + 1), cur, k, n, result);
+            cur.remove(cur.size() - 1);
+        }
+
+    }
+}
