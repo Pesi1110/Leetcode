@@ -1,0 +1,37 @@
+class Solution {
+    //注意count不可作为parameter传入，不然只会传入copy
+    int count = 0;
+    public int totalNQueens(int n) {
+        int[] sol = new int[n];
+        return helper(sol, 0, n);
+    }
+    private int helper(int[] sol, int startIndex, int n){
+        if(startIndex == n){
+            count++;
+            return count;
+        }
+        for(int j = 0; j < n; j++){
+            sol[startIndex] = j;
+            if(attack(sol, startIndex) == false){
+                helper(sol, startIndex + 1, n);
+            }
+        }
+        return count;             
+    }
+    private boolean attack(int[] sol, int row){
+        int a = row - sol[row];
+        int b = row + sol[row];
+        for(int i = 0; i < row; i++){
+            if(sol[row] == sol[i]){
+                return true;
+            }
+            if(i - sol[i] == a){
+                return true;
+            }
+            if(i + sol[i] == b){
+                return true;
+            }
+        }
+        return false;
+    }
+}
