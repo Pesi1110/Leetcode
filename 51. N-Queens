@@ -1,0 +1,56 @@
+class Solution {
+    List<List<String>> result = new ArrayList<>();
+    List<String> cur = new ArrayList<>();
+    public List<List<String>> solveNQueens(int n) {
+        int[] sol = new int[n];
+        helper(sol, 0, n);
+        return result;
+    }
+    private void helper(int[] sol, int startIndex, int n){
+        if(startIndex == n){
+            transferString(sol, cur, n);
+            result.add(new ArrayList<>(cur));
+            cur.clear();
+            return;
+        }
+        for(int j = 0; j < n; j++){
+            sol[startIndex] = j;
+            if(attack(sol, startIndex) == false){
+                helper(sol, startIndex + 1, n);
+            }
+        }             
+    }
+    private boolean attack(int[] sol, int row){
+        int a = row - sol[row];
+        int b = row + sol[row];
+        for(int i = 0; i < row; i++){
+            if(sol[row] == sol[i]){
+                return true;
+            }
+            if(i - sol[i] == a){
+                return true;
+            }
+            if(i + sol[i] == b){
+                return true;
+            }
+        }
+        return false;
+    }
+    private void transferString(int[] sol, List<String> cur, int n){
+        for(int i = 0; i < n; i++){
+            int q = sol[i];
+            StringBuilder s = new StringBuilder();
+            char[] str = new char[n];
+            for(int j = 0; j < n; j++){
+                if(j != q){
+                    str[j] = '.';
+                }else{
+                    str[j] = 'Q';
+                } 
+            }
+            s.append(str);
+            cur.add(s.toString());
+        }
+        
+    }
+}
