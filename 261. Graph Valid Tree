@@ -1,0 +1,67 @@
+class Solution {
+    public boolean validTree(int n, int[][] edges) {
+        
+        Map<Integer, Set<Integer>> mapping = new HashMap<>();
+        mappingHelper2(mapping, edges, n);
+        Queue<Integer> queue = new LinkedList<>();
+        boolean[] visited = new boolean[n];
+        queue.offer(0);
+        int count = 0;
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                int node = queue.poll();
+                if (visited[node]) {
+                    return false;
+                } else {
+                    visited[node] = true;
+                    count++;
+                }
+                if(mapping.get(node) != null){
+                    for(int neighbor: mapping.get(node)){
+                        //Remove node from its neighbors' neighbor list
+                        if(mapping.get(neighbor) != null){
+                            mapping.get(neighbor).remove(node);
+                        }
+                        //Add node's neighbors to the queue
+                        queue.offer(neighbor);
+                    }
+                }
+            }
+        }
+        return count == n;
+    }
+    private void mappingHelper(Map<Integer, Set<Integer>> mapping, int[][] edges, int n){
+        int size = edges.length;
+        for(int i = 0; i < size; i++){
+            if(!mapping.containsKey(edges[i][0])){
+                Set<Integer> set = new HashSet<>();
+                mapping.put(edges[i][0], set);
+                set.add(edges[i][1]);
+            }else{
+                mapping.get(edges[i][0]).add(edges[i][1]);
+            }
+            if(!mapping.containsKey(edges[i][1])){
+                Set<Integer> set = new HashSet<>();
+                mapping.put(edges[i][1], set);
+                set.add(edges[i][0]);
+            }else{
+                mapping.get(edges[i][1]).add(edges[i][0]);
+            }
+        }
+    }
+
+    private void mappingHelper2(Map<Integer, Set<Integer>> mapping, int[][] edges, int n){
+        for (int i = 0; i < edges.length; i++) {
+            addEdge(mapping, edges[i][0], edges[i][1]);
+            addEdge(mapping, edges[i][1], edges[i][0]);
+        }
+    }
+
+    private void addEdge(Map<Integer, Set<Integer>> mapping, int i, int j) {
+        final Set<Integer> neighbors = mapping.getOrDefault(i, new HashSet<>());
+        neighbors.add(j);
+        mapping.put(i, neighbors);
+    }
+
+}
