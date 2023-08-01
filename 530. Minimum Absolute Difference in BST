@@ -1,0 +1,60 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Result{
+    int minValue;
+    int maxValue;
+    int minDiff;
+    Result(int minValue, int maxValue, int minDiff){
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.minDiff = minDiff;
+    }
+}
+class Solution {
+    public int getMinimumDifference(TreeNode root) {
+        if(root == null){
+            return 0;
+        }
+        return helper(root).minDiff;
+    }
+    private Result helper(TreeNode root){
+        if(root == null){
+            return new Result(-1, -1, Integer.MAX_VALUE);
+        }
+        Result left = helper(root.left);
+        Result right = helper(root.right);
+        int min = Math.min(left.minDiff, right.minDiff);
+        Result result = new Result(-1, -1, -1);
+        int leftMinDiff;
+        int rightMinDiff;
+        if(left.maxValue != -1){
+            leftMinDiff = root.val - left.maxValue;
+            result.minValue = left.minValue;
+        }else{
+            leftMinDiff = Integer.MAX_VALUE;
+            result.minValue = root.val;
+        }
+        if(right.minValue != -1){
+            rightMinDiff = right.minValue - root.val;
+            result.maxValue = right.maxValue;
+        }else{
+            rightMinDiff = Integer.MAX_VALUE;
+            result.maxValue = root.val;
+        }
+        result.minDiff = Math.min(min, Math.min(leftMinDiff, rightMinDiff));
+        return result;        
+    }
+}
