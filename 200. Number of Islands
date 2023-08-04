@@ -1,0 +1,53 @@
+class Solution {
+    public int numIslands(char[][] grid) {
+        int count = 0;
+        int m = grid.length;
+        int n = grid[0].length;
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                if(grid[i][j] == '1'){
+                    checkIsland(grid, i, j);
+                    count++;
+                }else{
+                    continue;
+                }
+            }
+        }
+        return count;
+    }
+    private void checkIsland(char[][] grid, int sr, int sc){
+        Queue<ArrayList<Integer>> queue = new LinkedList<>();
+        ArrayList<Integer> pixel = new ArrayList<>();
+        pixel.add(sr);
+        pixel.add(sc);
+        queue.offer(pixel);
+        grid[sr][sc] = '2';
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                ArrayList<Integer> point = queue.poll();
+                int row = point.get(0);
+                int col = point.get(1);
+                if(row + 1 < grid.length && grid[row + 1][col] == '1'){
+                    addToIsland(queue, grid, row + 1, col);
+                } 
+                if(row - 1 >= 0 && grid[row - 1][col] == '1'){
+                    addToIsland(queue, grid, row - 1, col);
+                } 
+                if(col + 1 < grid[0].length && grid[row][col + 1] == '1'){
+                    addToIsland(queue, grid, row, col + 1);
+                } 
+                if(col - 1 >= 0 && grid[row][col - 1] == '1'){
+                    addToIsland(queue, grid, row, col - 1);
+                } 
+            }
+        }
+    }
+    private void addToIsland(Queue<ArrayList<Integer>> queue, char[][] grid, int sr, int sc){
+        ArrayList<Integer> island = new ArrayList<>();
+        island.add(sr);
+        island.add(sc);
+        queue.offer(island);
+        grid[sr][sc] = '2';
+    }
+}
