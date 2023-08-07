@@ -1,0 +1,102 @@
+Recursion:
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if(p == null && q == null){
+            return true;
+        }
+        List<Integer> pList = new ArrayList<>();
+        transferToList(p, pList);
+        List<Integer> qList = new ArrayList<>();
+        transferToList(q, qList);
+        if(pList.size() != qList.size()){
+            return false;
+        }
+        int size = pList.size();
+        for(int i = 0; i < size; i++){
+            if(!pList.get(i).equals(qList.get(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+    private void transferToList(TreeNode node, List<Integer> list){
+        if(node == null){
+            list.add(20000);
+            return;
+        }
+        list.add(node.val);
+        transferToList(node.left, list);
+        transferToList(node.right, list);
+    }
+}
+BFS:
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        Queue<TreeNode> pList = new LinkedList<>();
+        Queue<TreeNode> qList = new LinkedList<>();
+        pList.offer(p);
+        qList.offer(q);
+        while(!pList.isEmpty() && !qList.isEmpty()){
+            int size = pList.size();
+            for(int i = 0; i < size; i++){
+                TreeNode pNode = pList.poll();
+                TreeNode qNode = qList.poll();
+                //判断值是否相等,只有两边都是非空才能比较.val,如果一个null一个非null，无法比较.val，直接return false
+                if(pNode != null && qNode != null){
+                    if(pNode.val != qNode.val){
+                        return false;
+                    }
+                }else if(pNode == null && qNode == null){
+                    continue;
+                }else{
+                    return false;
+                }
+                //如果左右都是null,就不再往里加,queue继续pop下一个
+                //只要有一边非null，则都得往queue里面放
+                if(pNode.left == null && pNode.right == null){
+                    if(qNode.left == null && qNode.right == null){
+                        continue;
+                    }else{
+                        return false;
+                    }
+                }else{
+                    pList.offer(pNode.left);
+                    pList.offer(pNode.right);
+                    qList.offer(qNode.left);
+                    qList.offer(qNode.right);
+                }             
+            }
+        }
+        return true;
+    }
+}
