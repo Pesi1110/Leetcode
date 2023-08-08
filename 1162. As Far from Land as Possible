@@ -1,0 +1,155 @@
+class Coordinate{
+    int row;
+    int col;
+    Coordinate(int row, int col){
+        this.row = row;
+        this.col = col;
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, col);
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Coordinate)) return false;
+        Coordinate that = (Coordinate) o;
+        return row == that.row && col == that.col;
+    }
+}
+class Solution {
+    public int maxDistance(int[][] grid) {
+        Queue<Coordinate> queue = new LinkedList<>();
+        putLandsIntoQueue(grid, queue);
+        if(queue.size() == grid.length * grid.length){
+            return -1;
+        }
+        int maxDistance = expandLands(grid, queue);
+        return maxDistance;
+    }
+    private void putLandsIntoQueue(int[][] grid, Queue<Coordinate> queue){
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid.length; j++){
+                if(grid[i][j] == 1){
+                    Coordinate land = new Coordinate(i, j);
+                    queue.offer(land);
+                }
+            }
+        }
+    }
+    private int expandLands(int[][] grid, Queue<Coordinate> queue){
+        Set<Coordinate> visited = new HashSet<>();
+        int count = -1;
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                Coordinate coor = queue.poll();
+                List<Coordinate> waters = expandToWaterAndCheckMargin(coor, grid);
+                for(int j = 0; j < waters.size(); j++){
+                    Coordinate water = waters.get(j);
+                    if(!visited.contains(water)){
+                        queue.offer(water);
+                        visited.add(water);
+                    }
+                }  
+            }
+            count++;
+        }
+        return count;
+    }
+    private List<Coordinate> expandToWaterAndCheckMargin(Coordinate coor, int[][]grid){
+        int[] x = {0, 1, -1, 0};
+        int[] y = {1, 0, 0, -1};
+        List<Coordinate> waters = new ArrayList<>();
+        for(int i = 0; i < 4; i++){
+            if(coor.row + x[i] < grid.length && coor.row + x[i] >= 0){
+                if(coor.col + y[i] < grid.length && coor.col + y[i] >= 0){
+                    if(grid[coor.row + x[i]][coor.col + y[i]] == 0){
+                        Coordinate water = new Coordinate(coor.row + x[i], coor.col + y[i]);
+                        waters.add(water);
+                    }
+                }
+            }
+        }
+        return waters;
+    }
+}
+
+Not working. Too slow:
+
+class Coordinate{
+    int row;
+    int col;
+    Coordinate(int row, int col){
+        this.row = row;
+        this.col = col;
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, col);
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Coordinate)) return false;
+        Coordinate that = (Coordinate) o;
+        return row == that.row && col == that.col;
+    }
+}
+class Solution {
+    Map<Coordinate, Integer> nearestDistance = new HashMap<>();
+    int max = -1;
+    public int maxDistance(int[][] grid) {
+        int size = grid.length;
+        //用map记录所有0坐标距离最近的1的距离
+        //traver grid,碰到0就做BFS，扩散找1，并记录能扩散到的第一个1的距离，即为最短距离
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                if(grid[i][j] == 0){
+                    Coordinate water = new Coordinate(i, j);
+                    findDistance(grid, water);
+                }else{
+                    continue;
+                }
+            }
+        }
+        //对比所有0到最近1的距离，找出最大值
+        for (Map.Entry<Coordinate, Integer> entry : nearestDistance.entrySet()) {
+            max = Math.max(max, entry.getValue());
+        }
+        return max == 0 ? -1 : max;  
+    }
+    
+    private void findDistance(int[][] grid, Coordinate water){
+        int[] x = {0, 1, -1, 0};
+        int[] y = {1, 0, 0, -1};
+        Queue<Coordinate> queue = new LinkedList<>();
+        queue.offer(water);
+        Set<Coordinate> visited = new HashSet<>();
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                Coordinate pixel = queue.poll();
+                visited.add(pixel);
+                for(int j = 0; j < 4; j++){
+                    if(pixel.row + x[j] < grid.length && pixel.row + x[j] >= 0){
+                        if(pixel.col + y[j] < grid.length && pixel.col + y[j] >= 0){
+                            Coordinate coor = new Coordinate(pixel.row + x[j], pixel.col + y[j]);
+                            if(!visited.contains(coor)){
+                                queue.offer(coor);
+                            }
+                            if(grid[coor.row][coor.col] == 1){
+                                nearestDistance.put(water, calculateDistance(coor, water));
+                                return;
+                            }
+                        }
+                    }   
+                }
+            }
+        }
+    }
+    private Integer calculateDistance(Coordinate land, Coordinate water){
+        int distance = Math.abs(land.row - water.row) + Math.abs(land.col - water.col);
+        return distance;
+    }
+}
