@@ -1,0 +1,55 @@
+class Coordinate{
+    int row;
+    int col;
+    Coordinate(int row, int col){
+        this.row = row;
+        this.col = col;
+    }
+}
+class Solution {
+    int count = 0;
+    public int closedIsland(int[][] grid) {
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[0].length; j++){
+                if(grid[i][j] == 0){
+                    Coordinate land = new Coordinate(i, j);
+                    expandLand(grid, land);
+                }
+            }
+        }
+        return count;
+    }
+    private void expandLand(int[][] grid, Coordinate land){
+        int[] x = {0, 1, -1, 0};
+        int[] y = {1, 0, 0, -1};
+        Queue<Coordinate> queue = new LinkedList<>();
+        queue.offer(land);
+        grid[land.row][land.col] = 2;
+        boolean isClosedIsland = true;
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                Coordinate coor = queue.poll();
+                for(int j = 0; j < 4; j++){
+                    if(coor.row + x[j] < grid.length && coor.row + x[j] >= 0){
+                        if(coor.col + y[j] < grid[0].length && coor.col + y[j] >= 0){
+                            if(grid[coor.row + x[j]][coor.col + y[j]] == 0){
+                                grid[coor.row + x[j]][coor.col + y[j]] = 2; 
+                                queue.offer(new Coordinate(coor.row + x[j], coor.col + y[j]));
+                            }
+                        }else{
+                            //不可以直接return,因为剩下没被explore的0在之后的遍历中还会进入BFS，这个岛周围不是1就是2，没有边界了
+                            //会overcount
+                            isClosedIsland = false;
+                        }
+                    }else{
+                        isClosedIsland = false;
+                    }
+                }
+            }
+        }
+        if(isClosedIsland == true){
+            count++;
+        }
+    }
+}
