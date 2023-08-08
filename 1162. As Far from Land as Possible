@@ -38,7 +38,7 @@ class Solution {
         }
     }
     private int expandLands(int[][] grid, Queue<Coordinate> queue){
-        Set<Coordinate> visited = new HashSet<>();
+        // Set<Coordinate> visited = new HashSet<>();
         int count = -1;
         while(!queue.isEmpty()){
             int size = queue.size();
@@ -47,10 +47,10 @@ class Solution {
                 List<Coordinate> waters = expandToWaterAndCheckMargin(coor, grid);
                 for(int j = 0; j < waters.size(); j++){
                     Coordinate water = waters.get(j);
-                    if(!visited.contains(water)){
-                        queue.offer(water);
-                        visited.add(water);
-                    }
+                    // if(!visited.contains(water)){
+                    queue.offer(water);
+                        // visited.add(water);
+                    // }
                 }  
             }
             count++;
@@ -66,6 +66,7 @@ class Solution {
                 if(coor.col + y[i] < grid.length && coor.col + y[i] >= 0){
                     if(grid[coor.row + x[i]][coor.col + y[i]] == 0){
                         Coordinate water = new Coordinate(coor.row + x[i], coor.col + y[i]);
+                        grid[coor.row + x[i]][coor.col + y[i]] = 2;
                         waters.add(water);
                     }
                 }
