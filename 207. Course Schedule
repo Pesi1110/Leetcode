@@ -1,0 +1,74 @@
+class Solution {
+    Map<Integer, List<Integer>> mapping = new HashMap<>();
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        Map<Integer, Integer> inDegree = findIndegree(prerequisites);
+        //Edge case: 防止有的课不在prerequisites里面，即不需要选修课也能上
+        for(int i = 0; i < numCourses; i++){
+            if(!mapping.containsKey(i)){
+                mapping.put(i, new ArrayList<>());
+            }
+            if(!inDegree.containsKey(i)){
+                inDegree.put(i, 0);
+            }
+        }
+        List<Integer> start = new ArrayList<>();
+        for(Integer startPoint : inDegree.keySet()){
+            if(inDegree.get(startPoint) == 0){
+                start.add(startPoint);
+            }
+        }
+        List<Integer> result = findResult(start, inDegree);
+        if(result.size() != numCourses){
+            return false;
+        }
+        return true;
+    }
+    private Map<Integer, Integer> findIndegree(int[][] prerequisites){
+        int size = prerequisites.length;
+        Map<Integer, Integer> inDegree = new HashMap<>();
+        for(int i = 0; i < size; i++){
+            int node = prerequisites[i][1];
+            int neighbor = prerequisites[i][0];
+            if(!inDegree.containsKey(node)){
+                inDegree.put(node, 0);
+            }
+            if(!inDegree.containsKey(neighbor)){
+                inDegree.put(neighbor, 1);
+            }else{
+                int indegree = inDegree.get(neighbor) + 1;
+                inDegree.replace(neighbor, indegree);
+            }
+            if(!mapping.containsKey(node)){
+                List<Integer> neighbors = new ArrayList<>();
+                neighbors.add(neighbor);
+                mapping.put(node, neighbors);
+            }else{
+                mapping.get(node).add(neighbor);
+            }
+        }
+        return inDegree;
+    }
+    private List<Integer> findResult(List<Integer> starts, Map<Integer, Integer> inDegree){
+        List<Integer> result = new ArrayList<>();
+        Queue<Integer> queue = new LinkedList<>();
+        for(Integer start : starts){
+            queue.offer(start);
+            result.add(start);
+        }
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                Integer node = queue.poll();
+                for(Integer neighbor : mapping.get(node)){
+                    int updatedIndegree = inDegree.get(neighbor) - 1;
+                    inDegree.put(neighbor, updatedIndegree);
+                    if(inDegree.get(neighbor) == 0){
+                        queue.offer(neighbor);
+                        result.add(neighbor);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+}
