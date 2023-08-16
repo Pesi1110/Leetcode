@@ -1,0 +1,45 @@
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        int i = 0;
+        List<List<Integer>> result = new ArrayList<>();
+        while(i < nums.length - 2){
+            for(List<Integer> uniquePair : twoSumPair(nums, i, -nums[i])){
+                uniquePair.add(nums[i]);
+                result.add(uniquePair);
+            }
+            i++;
+            while(i < nums.length && nums[i] == nums[i - 1]){
+                i++;
+            }
+        }
+        return result;
+
+    }
+    private List<List<Integer>> twoSumPair(int[] nums, int start, int target){
+        int i = start + 1;
+        int j = nums.length - 1;
+        List<List<Integer>> result = new ArrayList<>();
+        while(i < j){
+            if(nums[i] + nums[j] == target){
+                List<Integer> pair = new ArrayList<>();
+                pair.add(nums[i]);
+                pair.add(nums[j]);
+                result.add(pair);
+                i++;
+                j--;
+                while(i < j && nums[i] == nums[i - 1]){
+                    i++;
+                }
+                while(i < j && nums[j] == nums[j + 1]){
+                    j--;
+                }
+            }else if(nums[i] + nums[j] < target){
+                i++;
+            }else{
+                j--;
+            }
+        }
+        return result;
+    }
+}
