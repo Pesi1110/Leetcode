@@ -1,0 +1,70 @@
+import java.math.BigDecimal;
+class Solution {
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        Arrays.sort(nums);
+        int j = nums.length - 1;
+        List<List<Integer>> result = new ArrayList<>();
+        if(nums.length < 4){
+            return result;
+        } 
+        while(j >= 3){
+            List<List<Integer>> pairs = threeSum(nums, BigDecimal.valueOf(target).subtract(BigDecimal.valueOf(nums[j])), j);
+            if(pairs.size() > 0){
+               for(List<Integer> pair: pairs){
+                   pair.add(nums[j]);
+                   result.add(pair);
+               }
+            }
+            j--;
+            while(nums[j] == nums[j + 1] && j >= 3){
+                j--;
+            }            
+        }
+        return result;
+    }
+    private List<List<Integer>> threeSum(int[] nums, BigDecimal target, int endPoint){
+        int j = endPoint - 1;
+        List<List<Integer>> result = new ArrayList<>();
+        while(j >= 2){
+            List<List<Integer>> pairs = twoSum(nums, target.subtract(BigDecimal.valueOf(nums[j])), j);
+            if(pairs.size() > 0){
+                for(List<Integer> pair: pairs){
+                    pair.add(nums[j]);
+                    result.add(pair);
+                }
+            }
+            j--;
+            while(nums[j] == nums[j + 1] && j >= 2){
+                j--;
+            }
+        }
+        return result;
+    }
+    private List<List<Integer>> twoSum(int[] nums, BigDecimal target, int endPoint){
+        int i = 0; 
+        int j = endPoint - 1;
+        List<List<Integer>> result = new ArrayList<>();
+        while(i < j){
+            BigDecimal sum = BigDecimal.valueOf(nums[i]).add(BigDecimal.valueOf(nums[j]));
+            if(sum.compareTo(target) == 0){
+                List<Integer> pair = new ArrayList<>();
+                pair.add(nums[i]);
+                pair.add(nums[j]);
+                result.add(pair);
+                i++;
+                j--;
+                while(i < j && nums[i] == nums[i - 1]){
+                    i++;
+                }
+                while(i < j && nums[j] == nums[j + 1]){
+                    j--;
+                }
+            }else if(sum.compareTo(target) < 0){
+                i++;
+            }else{
+                j--;
+            }
+        }
+        return result;
+    }
+}
