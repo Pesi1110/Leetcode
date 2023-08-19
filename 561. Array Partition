@@ -1,0 +1,14 @@
+class Solution {
+    public int arrayPairSum(int[] nums) {
+        //求max sum of min.对于第二大的数，为了能被选出来加进sum中，必须跟最大的数搭配
+        //所以最大的sum必然是sorted array按顺序一对一对
+        Arrays.sort(nums);
+        int i = nums.length - 2;
+        int sum = 0;
+        while(i >= 0){
+            sum = sum + nums[i];
+            i = i - 2;
+        }
+        return sum;
+    }
+}
