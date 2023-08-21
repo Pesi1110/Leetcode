@@ -1,0 +1,47 @@
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        //Quick select。 O(n)
+        //如果不能排序，指针能做的只有互相对比大小
+        //随机取pivot point,左指针但凡小于它就往右移动，右指针但凡大于它就往左移动
+        //直到左指针在一个大于pivot的值上，右指针在一个小于pivot的值上，两两交换并左指针右移，右指针左移
+        //这么做到直到左右指针相遇，此时可以判断pivot左右各有几个数，并与k对比，看是只看Pivot左边还是右边
+        //例如pivot左边有k+1个数，则下一次partition只看pivot左边
+        //将left或者right和start或者end带入下一个partition
+        k = nums.length - k;
+        return partition(nums, 0, nums.length - 1, k);
+    }
+    private int partition(int[] nums, int start, int end, int k){
+        //recursion出口，因为无order，所以nums[k]必须要收敛到只有唯一一个数的区间内
+        if(start == end){
+            return nums[k];
+        }
+        int left = start;
+        int right = end;
+        int pivot = nums[(start + end) / 2];
+        while(left <= right){
+            while(left <= right && nums[left] < pivot){
+                left++;
+            }
+            while(left <= right && nums[right] > pivot){
+                right--;
+            }
+            if(left <= right){
+                swap(nums, left, right);
+                left++;
+                right--;
+            }
+        }
+        if(k <= right){
+            return partition(nums, start, right, k);
+        }
+        if(k >= left){
+            return partition(nums, left, end, k);
+        }
+        return nums[k];
+    }
+    private void swap(int[] nums, int left, int right){
+        int temp = nums[left];
+        nums[left] = nums[right];
+        nums[right] = temp;
+    }
+}
