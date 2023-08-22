@@ -1,0 +1,30 @@
+class Solution {
+    public void sortColors(int[] nums) {
+        if(nums.length == 1){
+            return;
+        }
+        int i = 0;
+        int left = 0;
+        int right = nums.length - 1;
+        while(i <= right){
+            if(nums[i] == 0){
+                //有可能i和left在同一个地方，自己换自己，没差
+                //也有可能不在同一个地方，那就是互换
+                swap(nums, left, i);
+                left++;
+                i++;
+            }else if(nums[i] == 1){
+                i++;
+            }else{
+                swap(nums, right, i);
+                right--;
+                //i不知道换回来个啥，进入循环再检查一遍，如果是2，再丢给R
+            }
+        }
+    }
+    private void swap(int[] nums, int i, int j){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
