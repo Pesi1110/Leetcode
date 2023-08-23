@@ -1,0 +1,49 @@
+class Result{
+    int sum;
+    int closest;
+    Result(int sum, int closest){
+        this.sum = sum;
+        this.closest = closest;
+    }
+}
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int j = nums.length - 1;
+        Result result = new Result(0, Integer.MAX_VALUE);
+        while(j >= 2){
+            Result twoSum = twoSumClosest(nums, target - nums[j], j);
+            if(result.closest >= twoSum.closest){
+                result.closest = twoSum.closest;
+                result.sum = twoSum.sum + nums[j];
+            };
+            j--;
+        }
+        return result.sum;
+    }
+    private Result twoSumClosest(int[] nums, int target, int endIndex){
+        int i = 0;
+        int j = endIndex - 1;
+        Result result = new Result(0, Integer.MAX_VALUE);
+        while(i < j){
+            if(nums[i] + nums[j] < target){
+                if(result.closest >= target - (nums[i] + nums[j])){
+                    result.closest = Math.min(target - (nums[i] + nums[j]), result.closest);
+                    result.sum = nums[i] + nums[j];                    
+                }
+                i++;
+            }else if(nums[i] + nums[j] > target){
+                if(result.closest >= (nums[i] + nums[j]) - target){
+                    result.closest = Math.min((nums[i] + nums[j]) - target, result.closest);
+                    result.sum = nums[i] + nums[j];
+                }
+                j--;
+            }else{
+                result.closest = 0;
+                result.sum = nums[i] + nums[j];
+                return result;
+            }
+        }
+        return result;
+    }
+}
