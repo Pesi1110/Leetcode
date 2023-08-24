@@ -1,0 +1,69 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode swapNodes(ListNode head, int k) {
+        //count size and decide left position & right position
+        //有可能n-k+1比k小，这时候就要左边等于n-k+1,右边等于k
+        ListNode node = head;
+        int count = 0;
+        while(node != null){
+            node = node.next;
+            count++;
+        }
+        int left = 0;
+        int right = 0;
+        if(k == count - k + 1){
+            return head;
+        }else if(k > count - k + 1){
+            left = count - k + 1;
+            right = k;
+        }else{
+            left = k;
+            right = count - k + 1;
+        }
+        //找到左右位置的node以及他们的前置节点
+        //注意会有LC == RP的情况出现，所以要分情况swap
+        ListNode dummy = new ListNode(0);
+        ListNode prev = dummy;
+        ListNode curt = head;
+        prev.next = curt;
+        int step = 1;
+        while(step != left){
+            prev = curt;
+            curt = curt.next;
+            step++;
+        }
+        ListNode leftPre = prev;
+        ListNode leftCurt = curt;
+        while(step < right){
+            prev = curt;
+            curt = prev.next;
+            step++;
+        }
+        ListNode rightPre = prev;
+        ListNode rightCurt = curt;
+        if(leftCurt != rightPre){
+            leftPre.next = rightCurt;
+            ListNode temp = rightCurt.next;
+            rightCurt.next = leftCurt.next;
+            leftCurt.next = temp;
+            rightPre.next = leftCurt;
+        }else{
+            leftPre.next = rightCurt;
+            ListNode temp = rightCurt.next;
+            rightCurt.next = leftCurt;
+            leftCurt.next = temp;
+        }
+
+
+        return dummy.next;
+    }
+}
