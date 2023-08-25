@@ -1,0 +1,70 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public void reorderList(ListNode head) {
+        //count linkedlist length;
+        int count = 0;
+        ListNode node = head;
+        while(node != null){
+            node = node.next;
+            count++;
+        }
+        if(count == 1){
+            return;
+        }
+        //find mid point
+        int mid;
+        if(count % 2 == 0){
+            mid = count / 2;
+        }else{
+            mid = count / 2 + 1;
+        }
+        //find midNode (right prev/ left last node)
+        ListNode midNode = head;
+        count = 1;
+        while(count < mid && midNode != null){
+            midNode = midNode.next;
+            count ++;
+        }
+        //Seperate left list and right list;
+        ListNode rightHead = midNode.next;
+        midNode.next = null;
+        //reverse right list & find new right head
+        ListNode right = reverseList(rightHead);
+        //combine left and right list
+        combineList(head, right);
+    }
+    private ListNode reverseList(ListNode head){
+        ListNode prev = head;
+        ListNode curt = head.next;
+        prev.next = null;
+        while(curt != null){
+            ListNode temp = curt.next;
+            curt.next = prev;
+            prev = curt;
+            curt = temp;
+        }
+        return prev;
+    }
+    private void combineList(ListNode left, ListNode right){
+        ListNode i = left;
+        ListNode j = right;
+        while(j != null && i != null){
+            ListNode leftTemp = i.next;
+            i.next = j;
+            ListNode rightTemp = j.next;
+            j.next = leftTemp;
+            i = leftTemp;
+            j = rightTemp;
+        }
+        
+    }
+}
