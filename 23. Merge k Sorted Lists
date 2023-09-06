@@ -1,0 +1,48 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Compare implements Comparator<ListNode>{
+    public int compare(ListNode a, ListNode b){
+        return a.val - b.val;
+    }
+}  
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) {
+            return null;
+        }
+        // Handling the case where there is only one non-null list
+        //In Java, the initial capacity must be greater than 1 for PriorityQueue. 
+        //In your case, if lists is empty or has only one element, this could potentially cause the problem.
+        if (lists.length == 1) {
+            return lists[0];
+        }
+        Compare comparator = new Compare();
+        //为了防止把所有Node都放入，每次poll之后改结构要logn，全部poll完就要nlogn
+        //把heap大小设置成lists.length个，合理运用了每个list都是sorted的特点，这样每次改结构就只需要logk，总共nlogk，更快一点
+        Queue<ListNode> heap = new PriorityQueue<>(lists.length, comparator);
+        for(int i = 0; i < lists.length; i++){
+            if(lists[i] != null){
+                heap.offer(lists[i]);
+            }
+        }
+        ListNode dummy = new ListNode(0);
+        ListNode prev = dummy;
+        while(!heap.isEmpty()){
+            ListNode curt = heap.poll();
+            if(curt.next != null){
+                heap.offer(curt.next);
+            }
+            prev.next = curt;
+            prev = curt;  
+        }
+        return dummy.next;
+    }
+}
