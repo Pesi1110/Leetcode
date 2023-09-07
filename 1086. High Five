@@ -1,0 +1,30 @@
+class Solution {
+    public int[][] highFive(int[][] items) {
+        Map<Integer, PriorityQueue<Integer>> mapping = new TreeMap<>();
+        int count = 0;
+        for(int i = 0; i < items.length; i++){
+            if(!mapping.containsKey(items[i][0])){
+                PriorityQueue<Integer> heap = new PriorityQueue<>();
+                heap.offer(-items[i][1]);
+                mapping.put(items[i][0], heap);
+                count++;
+            }else{
+                mapping.get(items[i][0]).offer(-items[i][1]);
+            }
+        }
+        int[][] result = new int[count][2];
+        int row = 0;
+        for(Integer id : mapping.keySet()){
+            int sum = 0;
+            for(int j = 0; j < 5; j++){
+                sum = sum + mapping.get(id).poll();
+            }
+            int avg = sum / 5;
+            result[row][0] = id;
+            result[row][1] = -avg;
+            row++;
+        }
+        return result;
+        
+    }
+}
