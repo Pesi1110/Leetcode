@@ -1,0 +1,33 @@
+class Point {
+    int x;
+    int y;
+    int distance;
+    public Point(int x, int y, int distance){
+        this.x = x;
+        this.y = y;
+        this.distance = distance;
+    }
+}
+class Compare implements Comparator<Point>{
+    public int compare(Point a, Point b){
+        return a.distance - b.distance;
+    }
+}
+class Solution {
+    public int[][] kClosest(int[][] points, int k) {
+        int[][] result = new int[k][2];
+        Compare comparator = new Compare();
+        PriorityQueue<Point> heap = new PriorityQueue<>(comparator);
+        for(int i = 0; i < points.length; i++){
+            int dis = points[i][0] * points[i][0] + points[i][1] * points[i][1];
+            Point point = new Point(points[i][0], points[i][1], dis);
+            heap.offer(point);
+        }
+        for(int j = 0; j < k; j++){
+            Point popMin = heap.poll();
+            result[j][0] = popMin.x;
+            result[j][1] = popMin.y;
+        }
+        return result;
+    }
+}
