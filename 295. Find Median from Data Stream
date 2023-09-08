@@ -1,0 +1,59 @@
+class MedianFinder {
+    PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+    PriorityQueue<Integer> maxHeap = new PriorityQueue<>(new Comparator<Integer>(){
+        public int compare(Integer a, Integer b){
+            return b - a;
+        }
+    });
+    boolean isEven = false;
+    boolean isFirst = true;
+    double median = 0;
+    public MedianFinder() {
+        
+    }
+    
+    public void addNum(int num) {
+        if(isFirst){
+            median = num;
+            isFirst = false;
+            return;
+        }
+        if(num <= median){
+            maxHeap.offer(num);
+        }else{
+            minHeap.offer(num);
+        }
+        isEven = !isEven;
+        if(minHeap.size() > maxHeap.size()){
+            if(isEven){
+                //加完之后是偶数，没加前位奇数，是heap中pop出来的数
+                //由于能加入heap中的中位数一定是以前add过的num，所以必定不为有小数的点，所以cast不会造成信息丢失
+                maxHeap.offer((int) median);
+                //要求double就要/2.0否则默认除的是int
+                median = (maxHeap.peek() + minHeap.peek()) / 2.0;
+            }else{
+                //加完num之后是奇数，相当于没加前是偶数，median为平均出来的，所以不加入heap中，只更新它
+                median = minHeap.poll();
+            }
+        }else{
+           if(isEven){
+                minHeap.offer((int) median);
+                median = (maxHeap.peek() + minHeap.peek()) / 2.0;
+            }else{
+                median = maxHeap.poll();
+            }            
+        }
+
+    }
+    
+    public double findMedian() {
+        return median;
+    }
+}
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder obj = new MedianFinder();
+ * obj.addNum(num);
+ * double param_2 = obj.findMedian();
+ */
