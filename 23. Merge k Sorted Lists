@@ -1,3 +1,4 @@
+方法一：PriorityQueue
 /**
  * Definition for singly-linked list.
  * public class ListNode {
@@ -45,4 +46,111 @@ class Solution {
         }
         return dummy.next;
     }
+}
+方法二：merge sort
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        //merge sort
+        if(lists == null || lists.length == 0){
+            return null;
+        }
+        if(lists.length == 1){
+            return lists[0];
+        }
+        return mergeHelper(0, lists.length - 1, lists);
+    }
+    private ListNode mergeHelper(int start, int end, ListNode[] lists){
+        if(start == end){
+            return lists[start];
+        }
+        ListNode left = mergeHelper(start, (start + end) / 2, lists);
+        ListNode right = mergeHelper((start + end) / 2 + 1, end, lists);
+        return mergeLists(left, right);
+    }
+    private ListNode mergeLists(ListNode list1, ListNode list2){
+        ListNode dummy = new ListNode(0);
+        ListNode curt = dummy;
+        while(list1 != null && list2 != null){
+            if(list1.val <= list2.val){
+                curt.next = list1;
+                curt = list1;
+                list1 = list1.next;
+            }else{
+                curt.next = list2;
+                curt = list2;
+                list2 = list2.next;
+            }
+        }
+        if(list1 != null){
+            curt.next = list1;
+        }
+        if(list2 != null){
+            curt.next = list2;
+        }
+        return dummy.next;
+    }   
+}
+方法三：两两合并
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if(lists.length == 0 || lists == null){
+            return null;
+        }
+        List<ListNode> list = Arrays.asList(lists);
+        while(list.size() > 1){
+            //这里需要考虑到奇偶问题，难以确定newList是要奇数还是偶数个，所以用arraylist
+            List<ListNode> newLists = new ArrayList<>();
+            for(int i = 0; i + 1 < list.size(); i += 2){
+                ListNode mergedListNode = mergeLists(list.get(i), list.get(i + 1));
+                newLists.add(mergedListNode);
+            }
+            if(list.size() % 2 == 1){
+                newLists.add(list.get(list.size() - 1));
+            }
+            list = newLists;
+        }
+        return list.get(0);
+    }
+    private ListNode mergeLists(ListNode list1, ListNode list2){
+        ListNode dummy = new ListNode(0);
+        ListNode curt = dummy;
+        while(list1 != null && list2 != null){
+            if(list1.val <= list2.val){
+                curt.next = list1;
+                curt = list1;
+                list1 = list1.next;
+            }else{
+                curt.next = list2;
+                curt = list2;
+                list2 = list2.next;
+            }
+        }
+        if(list1 != null){
+            curt.next = list1;
+        }
+        if(list2 != null){
+            curt.next = list2;
+        }
+        return dummy.next;
+    }   
 }
