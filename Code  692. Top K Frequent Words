@@ -1,0 +1,44 @@
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+        //count each string frequency
+        Map<String, Integer> countFrequency = new HashMap<>();
+        for(int i = 0; i < words.length; i++){
+            if(!countFrequency.containsKey(words[i])){
+                countFrequency.put(words[i], -1);
+            }else{
+                countFrequency.put(words[i], countFrequency.get(words[i]) - 1);
+            }
+        }
+        //create a treeMap, key as -frequency, value as priorityqueue of string
+        //这样可以保证每一个frequency里面的string都是按照lexicographical order排列的
+        TreeMap<Integer, PriorityQueue<String>> treeMap = new TreeMap<>();
+        for(String string : countFrequency.keySet()){
+            if(treeMap.get(countFrequency.get(string)) == null){
+                PriorityQueue<String> stringQueue = new PriorityQueue<>();
+                stringQueue.offer(string);
+                treeMap.put(countFrequency.get(string), stringQueue);
+            }else{
+                treeMap.get(countFrequency.get(string)).offer(string);
+            }
+        }
+        //add k value to result
+        int count = 0;
+        List<String> result = new ArrayList<>();
+        for(Integer frequency : treeMap.keySet()){
+            Queue<String> queue = treeMap.get(frequency);
+            while (!queue.isEmpty()) {
+                count++;
+                if(count <= k){
+                    result.add(queue.poll());
+                } else {
+                    break;
+                }
+            }
+            if (count == k) {
+                break;
+            }
+        }
+        return result;
+        
+    }
+}
