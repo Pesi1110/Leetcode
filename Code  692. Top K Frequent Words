@@ -1,3 +1,4 @@
+V1:自己想的方法，用treeMap+HashMap+PriorityQueue
 class Solution {
     public List<String> topKFrequent(String[] words, int k) {
         //count each string frequency
@@ -40,5 +41,49 @@ class Solution {
         }
         return result;
         
+    }
+}
+V2:更快并且锻炼comparator的方法
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+        // String s = "ab";
+        // String t = "c";
+        // System.out.println(s.compareTo(t));
+        //count each string frequency
+        Map<String, Integer> countFrequency = new HashMap<>();
+        for(int i = 0; i < words.length; i++){
+            countFrequency.put(words[i],countFrequency.getOrDefault(words[i], 0) + 1);
+        }
+        //之前的写法是create a treeMap, key as -frequency, value as priorityqueue of string
+        //但是如果构建comparator，使string之间的比较是按frequency来排列，就可以直接构建priority queue(capacity = k)
+        PriorityQueue<String> minHeap = new PriorityQueue<String>(new Comparator<String>() {
+            public int compare(String s1, String s2){
+                if (countFrequency.get(s1).equals(countFrequency.get(s2))) {
+                    //lexicographical order, a < g
+                    //例：s2 = g, s1 = a
+                    //s2.compareTo(s1)相当于s2-s1
+                    //s2>s1时，返回正数，此时comparator认为s1>s2，因为frequency相同时想要minHeap扔掉的是大的那个
+                    return s2.compareTo(s1);
+                } else {
+                    return countFrequency.get(s1) - countFrequency.get(s2);
+                }
+            }            
+        });
+        //此时minHeap会按照，frequency越高，s1>s2，则最先被poll的是frequency低的
+        //当frequency相等时，按照string的lexicographical，扔大的
+        //保持minHeap中只有k个数
+        for(String string: countFrequency.keySet()){
+            minHeap.offer(string);
+            if(minHeap.size() > k){
+                minHeap.poll();
+            }
+        }
+        //把minHeap当中的string加入结果中
+        List<String> result = new ArrayList<>();
+        while(!minHeap.isEmpty()){
+            result.add(minHeap.poll());
+        }
+        Collections.reverse(result);
+        return result;
     }
 }
