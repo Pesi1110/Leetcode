@@ -1,0 +1,19 @@
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int[][] path = new int[m][n];
+        int row = m;
+        int col = n;
+        for(int i = 0; i < row; i++){
+            path[i][0] = 1;
+        }
+        for(int j = 0; j < col; j++){
+            path[0][j] = 1;
+        }
+        for(int i = 1; i < row; i++){
+            for(int j = 1; j < col; j++){
+                path[i][j] = path[i - 1][j] + path[i][j - 1];
+            }
+        }
+        return path[m - 1][n - 1];
+    }
+}
