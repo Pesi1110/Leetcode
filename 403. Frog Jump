@@ -1,0 +1,41 @@
+class Solution {
+    public boolean canCross(int[] stones) {
+        //要落到stones[i]需要看0到i - 1记录的units+/-1 == i到目标index的距离
+        //每一步的units都取决于上一步，但是上一步是哪一个index不确定，可以有好几个
+        //dp只能取一种最优解，怎么办，用别的什么算法辅助一下
+        //map存每个index以及到它的Jump分别有哪些units，后面的index就看前面所有index有没有units +/-1 == distance
+        Map<Integer, Set<Integer>> dp = new HashMap<>();
+        //Initialize index 0, 1
+       for(int i = 0; i < 2; i++){
+           Set<Integer> set = new HashSet<>();
+           if(i ==1 && stones[i] != 1){
+               return false;
+           }
+           set.add(i);
+           dp.put(i, set);
+       }
+        //dp
+        int maxUnits = 1;
+        for(int i = 2; i < stones.length; i++){
+            Set<Integer> set = new HashSet<>();
+            for(int j = i - 1; j >= 0; j--){
+                int distance = stones[i] - stones[j];
+                if(distance > maxUnits + 1){
+                    break;
+                }
+                if(dp.get(j).contains(distance) || dp.get(j).contains(distance + 1) || dp.get(j).contains(distance - 1)){
+                    set.add(distance);
+                    maxUnits = Math.max(maxUnits, distance);
+                }
+            }
+            dp.put(i, set);
+        }
+        int lastIndex = stones.length - 1;
+        if(dp.get(lastIndex).size() != 0){
+            return true;
+        }
+        return false;
+
+
+    }
+}
