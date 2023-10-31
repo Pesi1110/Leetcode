@@ -1,0 +1,62 @@
+class Solution {
+    public String decodeString(String s) {
+       Stack<Character> stack = new Stack<>();
+       List<Character> letterList = new ArrayList<>();
+       List<Integer> numberList = new ArrayList<>();
+       List<Character> result = new ArrayList<>();
+       for(int i = 0; i < s.length(); i++){
+           if(s.charAt(i) != ']'){
+               //没碰到']'就一直往里加
+               stack.push(s.charAt(i));
+           }else{
+               //碰到']'，就把'['之前的letter全部pop出来
+               while(stack.peek() != '['){
+                   letterList.add(stack.pop());
+               }
+               //pop '['以及之前的数字
+               stack.pop();
+               //isDigit 等价于 c >= '0' && c <= '9', 
+               //Character.getNumericValue 等价于 (int) (c - '0'),不是(int)c是因为不是，字符是以ASCII码存储的，字符0对应的ASCII并不是0，而是48，B是66，C是67，以此类推
+              //字符相减其实是在算他们在ASCII码中的距离 
+               while(!stack.isEmpty() && Character.isDigit(stack.peek())){
+                   numberList.add(Character.getNumericValue(stack.pop()));
+               }
+               int num = convertNum(numberList);
+               dupLetter(num, letterList);
+               //将复制好的letter放回stack
+                for(int j = 0; j < letterList.size(); j++){
+                    stack.push(letterList.get(j));
+                }
+               numberList.clear();
+               letterList.clear();
+           }
+       }
+       StringBuilder sb = new StringBuilder();
+       while (!stack.isEmpty()) {
+           letterList.add(stack.pop());
+       }
+       for (int i = letterList.size() - 1; i >= 0; i--) {
+           sb.append(letterList.get(i));
+       }
+       return sb.toString();
+    }
+    private int convertNum(List<Integer> numberList){
+        int result = 0;
+        int base = 1;
+        for(int i = 0; i < numberList.size(); i++){
+            result = result + numberList.get(i) * base;
+            base = base * 10;
+        }
+        return result;
+    }
+    private void dupLetter(int num, List<Character> letterList){
+        int size = letterList.size();
+        for(int i = 0; i < num - 1; i++){
+            for(int j = 0; j < size;j++){
+                letterList.add(letterList.get(j));
+            }
+        }
+        Collections.reverse(letterList);
+    }
+
+}
