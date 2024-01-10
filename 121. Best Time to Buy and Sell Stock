@@ -1,0 +1,16 @@
+class Solution {
+    public int maxProfit(int[] prices) {
+        //0到i碰到的最小的数是多少
+        int[] prefixMin = new int[prices.length];
+        prefixMin[0] = prices[0];
+        for(int i = 1; i < prefixMin.length; i++){
+            prefixMin[i] = Math.min(prefixMin[i - 1], prices[i]);
+        }
+        int result = 0;
+        for(int i = 0; i < prices.length; i++){
+            result = Math.max(result, prices[i] - prefixMin[i]);
+        }    
+        return result;
+        
+    }
+}
