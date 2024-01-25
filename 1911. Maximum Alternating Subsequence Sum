@@ -1,0 +1,10 @@
+class Solution {
+    public long maxAlternatingSum(int[] nums) {
+        long plusMax = 0, minusMax = 0;
+        for (int i = 0; i < nums.length; i++) {
+            plusMax = Math.max(plusMax, minusMax + nums[i]);
+            minusMax = Math.max(minusMax, plusMax - nums[i]);
+        }
+        return Math.max(plusMax, minusMax);
+     }
+}
