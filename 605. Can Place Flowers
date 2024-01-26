@@ -1,5 +1,6 @@
 class Solution {
     public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        //Greedy
         //能种则种
         //对于奇数和偶数个全空花圃来说，必然是从第一个开始种，能种最多
         //这个题相当于很多1分隔了几个空花圃，每个花圃都在头尾的1旁边空出来，然后剩下的看做是一个空花圃来种，就能种最多
@@ -14,5 +15,36 @@ class Solution {
             }
         }
         return count >= n? true: false;
+    }
+}
+class Solution {
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        int len = flowerbed.length;
+        int[] dp = new int[len + 1];
+        if(flowerbed[0] == 1){
+            dp[1] = 0;
+        }else{
+            dp[1] = 1;
+        }
+        for(int i = 2; i <= len; i++){
+            //0, 0
+           if(flowerbed[i - 1] == 0 && flowerbed[i - 2] == 0){
+               //0,0
+               //可选可不选
+               //不选+可选
+                dp[i] = Math.max(dp[i - 1], dp[i - 2] + 1);
+            }else if(flowerbed[i - 1] == 0 && flowerbed[i - 2] != 0){
+                //1, 0
+                //不选
+                dp[i] = dp[i - 1];
+            }else if(flowerbed[i - 1] == 1 && flowerbed[i - 2] == 0){
+                //已经有花了,必然等于前一位等于0时且不选的情况
+                dp[i] = dp[i - 2];
+            }else{
+                //1,1
+                dp[i] = dp[i - 1];
+            }
+        }
+        return dp[len] >= n? true: false;
     }
 }
