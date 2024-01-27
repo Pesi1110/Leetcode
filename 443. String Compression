@@ -1,0 +1,40 @@
+class Solution {
+    public int compress(char[] chars) {
+        int i = 0;
+        int j = 0;
+        int index = 0;
+        while(j < chars.length){
+            int count = 0;
+            while(j < chars.length && chars[i] == chars[j]){
+                j++;
+                count++;
+            }
+            chars[index] = chars[i];
+            index++;
+            if(count >= 2 && index < chars.length){
+                char[] arr = intToCharArray(count);
+                for(int k = 0; k < arr.length; k++){
+                    chars[k + index] = arr[k];
+                }
+                index = index + arr.length;
+            }
+            i = j;
+        }
+        return index;
+
+    }
+
+    public char[] intToCharArray(int num) {
+        List<Integer> arr = new ArrayList<>();
+        while (num > 0) {
+            arr.add(num % 10);
+            num /= 10;
+        }
+        int n = arr.size();
+        char[] ans = new char[n];
+        for (int i = 0; i < n; i++) {
+            ans[i] = (char) (arr.get(n - i - 1) + '0');
+        }
+        return ans;
+    }
+}
