@@ -1,0 +1,31 @@
+class Solution {
+    public int equalPairs(int[][] grid) {
+        Map<List<Integer>, Integer> rowMap = new HashMap<>();
+        Map<List<Integer>, Integer> colMap = new HashMap<>();
+        int row = grid.length;
+        int col = grid[0].length;
+        for(int i = 0; i < row; i++){
+            List<Integer> rowList = new ArrayList<>();
+            for(int j = 0; j < col; j++){
+                rowList.add(grid[i][j]);
+            }
+            rowMap.put(rowList, rowMap.getOrDefault(rowList, 0) + 1);
+        }
+        for(int i = 0; i < col; i++){
+            List<Integer> colList = new ArrayList<>();
+            for(int j = 0; j < row; j++){
+                colList.add(grid[j][i]);
+            }
+            colMap.put(colList, colMap.getOrDefault(colList, 0) + 1);
+        }
+        int count = 0;
+        for(List<Integer> list: rowMap.keySet()){
+            if(colMap.containsKey(list) && colMap.get(list) == 1){
+                count = count + rowMap.get(list);
+            }else if(colMap.containsKey(list) && colMap.get(list) > 1){
+                count = count + rowMap.get(list) * colMap.get(list);
+            }
+        }
+        return count;
+    }
+}
