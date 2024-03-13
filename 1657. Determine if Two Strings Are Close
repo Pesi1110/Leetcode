@@ -1,0 +1,32 @@
+class Solution {
+    public boolean closeStrings(String word1, String word2) {
+        //满足的三个条件：
+        //两个string长度相同
+        //两个string包含的unique字母都一样
+        //两个string当中字母出现的次数要一样
+        //例如cabbba和abbccc，出现的都是1,2,3次
+        int len1 = word1.length();
+        int len2 = word2.length();
+        if(len1 != len2){
+            return false;
+        }
+        Map<Character, Integer> map1 = new HashMap<>();
+        Map<Character, Integer> map2 = new HashMap<>();
+        //另外一个求每个字母出现次数的technic是
+        //int cnt1[] = new int[26]; for循环，cnt1[word1.charAt(i) - 'a']++;
+        for(int i = 0; i < len1; i++){
+            map1.put(word1.charAt(i), map1.getOrDefault(word1.charAt(i), 0) + 1);
+            map2.put(word2.charAt(i), map2.getOrDefault(word2.charAt(i), 0) + 1);
+        }
+        //map.keySet().equals对比的是两个map的key是否完全一样
+        if(!map1.keySet().equals(map2.keySet())){return false;}
+        //map.values()返回一个collection,所以可以直接放入()当中
+        List<Integer> list1 = new ArrayList<>(map1.values());
+        List<Integer> list2 = new ArrayList<>(map2.values());
+        //Arrays.sort只能用在int[]，Arraylist的sort需要用Collections
+        Collections.sort(list1);
+        Collections.sort(list2);
+        //list.equals对比的是两个list是否完全一样，其中包括了顺序一样，每一位的value一样，所以必须先sort
+        return list1.equals(list2);
+    }
+}
