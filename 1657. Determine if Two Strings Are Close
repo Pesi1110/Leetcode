@@ -19,6 +19,8 @@ class Solution {
             map2.put(word2.charAt(i), map2.getOrDefault(word2.charAt(i), 0) + 1);
         }
         //map.keySet().equals对比的是两个map的key是否完全一样
+        //.equals如果对比的是set，就不会看顺序，只要内容完全一样即可
+        //如果对比的是collections(包括list),则要看顺序
         if(!map1.keySet().equals(map2.keySet())){return false;}
         //map.values()返回一个collection,所以可以直接放入()当中
         List<Integer> list1 = new ArrayList<>(map1.values());
