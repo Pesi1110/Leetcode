@@ -1,0 +1,50 @@
+class Solution {
+    public String predictPartyVictory(String senate) {
+        int rcount = 0;
+        int dcount = 0;
+        Queue<Character> queue = new LinkedList<>();
+        for(int i = 0; i < senate.length(); i ++){
+            queue.offer(senate.charAt(i));
+            if(senate.charAt(i) == 'R'){
+                rcount++;
+            }else{
+                dcount++;
+            }
+        }
+        //一轮轮来，每一轮先出的不会被抵消，就加回queue中等下一轮
+        //count，type代表先出现的相同的字母个数和字母（之后出现不一样的字母，会把count一一抵消,且这个不一样的字母不会加回queue，直至0的时候，开始记录新的字母个数和type,并加回queue)
+        //这个题目就是先出的可以把后面不同的毙掉，自己加回queue中。相当于到最后谁在前面谁就赢
+        //RRD -> RR
+        //RDD -> DR -> D
+        //RDR -> RR
+        //RD -> R
+        int count = 0;
+        char type = queue.peek();
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                char pop = queue.poll();
+                if(count == 0){
+                    count++;
+                    type = pop;
+                    queue.offer(pop);
+                }else if(count != 0 && pop != type){
+                    if(pop == 'R'){rcount--;}
+                    else{dcount--;}
+                    count--;
+                }else if(count != 0 && pop == type){
+                    queue.offer(pop);
+                    count++;  
+                }
+            }
+            if(rcount == 0 || dcount == 0){
+                break;
+            }
+            
+        }
+        if(rcount == 0){
+            return "Dire";
+        } 
+        return "Radiant"; 
+    }
+}
