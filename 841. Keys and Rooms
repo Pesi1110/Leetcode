@@ -1,3 +1,4 @@
+DFS:
 class Solution {
     public boolean canVisitAllRooms(List<List<Integer>> rooms) {
         int size = rooms.size();
@@ -13,5 +14,32 @@ class Solution {
         for(int i = 0; i < rooms.get(index).size(); i++){
             helper(rooms, rooms.get(index).get(i), visited);
         }
+    }
+}
+BFS:
+class Solution {
+    public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+        int n = rooms.size();
+        int count = 1;
+        boolean[] visited = new boolean[n];
+        visited[0] = true;
+        Queue<Integer> queue = new LinkedList<>();
+        for(int i = 0; i < rooms.get(0).size(); i++){
+            queue.offer(rooms.get(0).get(i));
+        }
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                Integer room = queue.poll();
+                if(!visited[room]){
+                    visited[room] = true;
+                    count++;
+                    for(int j = 0; j < rooms.get(room).size(); j++){
+                        queue.offer(rooms.get(room).get(j));
+                    }
+                }
+            }
+        }
+        return count == rooms.size();
     }
 }
