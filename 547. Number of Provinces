@@ -1,0 +1,26 @@
+class Solution {
+    public int findCircleNum(int[][] isConnected) {
+        int n = isConnected[0].length;
+        boolean[] visited = new boolean[n];
+        int count = 0;
+        //问有几个连通图，所以每个城市如果没因为连接visit到，就需要看一下，说不定自己有一个新的连通图
+        for(int i = 0; i < n; i++){
+            if(!visited[i]){
+                helper(n, visited, i, isConnected);
+                count++;
+            }   
+        }  
+        return count;
+    }
+    private void helper(int size, boolean[] visited, int city, int[][] isConnected){
+        if(visited[city]){
+            return;
+        }
+        visited[city] = true;
+        for(int i = 0; i < size; i++){
+            if(isConnected[city][i] == 1){
+                helper(size, visited, i, isConnected);
+            }
+        }
+    }
+}
