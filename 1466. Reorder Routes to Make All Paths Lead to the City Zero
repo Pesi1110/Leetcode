@@ -1,0 +1,31 @@
+class Solution {
+    
+    List<List<Integer>> graph;
+
+    int distance[];
+
+    public int minReorder(int n, int[][] connections) {
+        graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
+        for (int[] c : connections) {
+            graph.get(c[0]).add(c[1]);
+            graph.get(c[1]).add(c[0]);
+        }
+        distance = new int[n];
+        int ans = 0;
+        dfs(0, 1);
+        for (int[] c : connections) {
+            if (distance[c[0]] < distance[c[1]]) ans++;
+        }
+        return ans;
+    }
+
+    public void dfs(int cur, int d) {
+        distance[cur] = d;
+        for (int next : graph.get(cur)) {
+            if (distance[next] == 0) {
+                dfs(next, d + 1);
+            }
+        }
+    }
+}
