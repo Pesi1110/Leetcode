@@ -1,0 +1,35 @@
+class Solution {
+    public int nearestExit(char[][] maze, int[] entrance) {
+        int step = 0;
+        //row
+        int m = maze.length;
+        //column
+        int n = maze[0].length;
+        Set<int[]> visited = new HashSet<>();
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(entrance);
+        visited.add(entrance);
+        int[][] matrix = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                int[] cell = queue.poll();
+                if((cell[0] != entrance[0]) && (cell[1] != entrance[1]) && (cell[0] == 0 || 
+                    cell[0] == m - 1 || cell[1] == 0 || cell[1] == n - 1)){
+                    return step;
+                }
+                for(int j = 0; j < 4; j++){
+                    int[] neighbor = new int[]{cell[0] + matrix[j][0], cell[1] + matrix[j][1]};
+                    if(neighbor[0] >= 0 && neighbor[0] < m && neighbor[1] >= 0 && neighbor[1] < n){
+                        if(maze[neighbor[0]][neighbor[1]] == '.' && !visited.contains(neighbor)){
+                            queue.offer(neighbor);
+                            visited.add(neighbor);
+                        }
+                    }
+                }
+            }
+            step++;
+        }
+        return -1;
+    }
+}
