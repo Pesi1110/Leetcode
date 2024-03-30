@@ -1,0 +1,31 @@
+class Solution {
+    public long maxScore(int[] nums1, int[] nums2, int k) {
+        int n = nums1.length;
+        int[][] arr = new int[n][2];
+        for(int i = 0; i < n; i++){
+            arr[i][0] = nums2[i];
+            arr[i][1] = nums1[i];
+        }
+        //从nums2中前k个大的数开始，因为一定是最大的最小的数
+        //此时对应的nums1和不一定是最大的，再看前k+1大的数，这时候看对应的nums1的数有没有更大
+        //有的话把minHeap中最小的pop出来，放这个大的，然后乘以nums2中第k+1大的数，跟result相比
+        //按nums2从大到小排列
+        Arrays.sort(arr, (a, b) -> b[0] - a[0]);
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        long sum = 0;
+        long result = 0;
+        for(int j = 0; j < k; j++){
+            minHeap.add(arr[j][1]);
+            sum = arr[j][1] + sum; 
+        }
+        result = sum * arr[k - 1][0];
+        for(int a = k; a < nums1.length; a++){
+            if(arr[a][1] > minHeap.peek()){
+                sum = sum - minHeap.poll() + arr[a][1];
+                minHeap.add(arr[a][1]);
+                result = Math.max(result, sum * arr[a][0]);
+            }
+        }
+        return result;
+    }
+}
