@@ -1,3 +1,4 @@
+Quick Select:
 class Solution {
     public int findKthLargest(int[] nums, int k) {
         //Quick select。 O(n)
@@ -43,5 +44,18 @@ class Solution {
         int temp = nums[left];
         nums[left] = nums[right];
         nums[right] = temp;
+    }
+}
+minHeap:
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>();
+        for(int i = 0; i < nums.length; i++){
+            maxHeap.add(-nums[i]);
+        }
+        for(int j = 0; j < k - 1; j++){
+            maxHeap.poll();
+        }
+        return -maxHeap.poll();
     }
 }
