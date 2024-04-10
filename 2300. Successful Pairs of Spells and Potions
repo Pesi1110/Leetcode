@@ -1,0 +1,38 @@
+class Solution {
+    public int[] successfulPairs(int[] spells, int[] potions, long success) {
+        int n = spells.length;
+        int m = potions.length;
+        int[] pairs = new int[n];
+        Arrays.sort(potions);
+        for(int i = 0; i < n; i++){
+            long target = success%spells[i] == 0?  success/spells[i]: success/spells[i] + 1;
+            int index = binarySearch(target, potions);
+            pairs[i] = m - index;
+        }
+        return pairs;
+    }
+    private int binarySearch(long target, int[] potions){
+        //如果potions里面有几个相同的，需要找到最左边的Index
+        int l = 0;
+        int r = potions.length - 1;
+        while(l + 1 < r){
+            int mid = l + (r - l) / 2;
+            if(potions[mid] == target){
+                if(potions[mid - 1] == target){
+                    r = mid;
+                }else{
+                    return mid;
+                }
+            }else if(potions[mid] < target){
+                l = mid;
+            }else{
+                r = mid;
+            }
+        }
+        if(potions[l] == target) return l;
+        if(potions[r] < target) return potions.length;
+        if(potions[l] > target) return 0;
+        if(potions[r] == target) return r;
+        return r;
+    }   
+}
