@@ -1,0 +1,30 @@
+class Solution {
+    public int minEatingSpeed(int[] piles, int h) {
+        //piles总数/h，平均数为最小该吃的，但是只有在每pile都是这个平均数的时候可以做到
+        Arrays.sort(piles);
+        int n = piles.length;
+        int l = 1;
+        int r = piles[n - 1];
+        while(l + 1 < r){
+            int mid = l + (r - l) / 2;
+            if(eatAll(mid, piles, h)){
+                r = mid;
+            }else{
+                l = mid;
+            }
+        }
+        if(eatAll(l, piles, h)) return l;
+        return r;
+    }
+    private boolean eatAll(int speed, int[] piles, int h){
+        int count = 0;
+        for(int i = 0; i < piles.length; i++){
+            if(piles[i] <= speed){
+                count++;
+            }else{
+                count = piles[i] % speed == 0? count + piles[i]/ speed: count + piles[i] / speed + 1;
+            }
+        }
+        return count <= h;
+    }
+}
